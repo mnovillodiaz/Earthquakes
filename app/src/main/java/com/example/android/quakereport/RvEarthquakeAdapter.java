@@ -1,5 +1,6 @@
 package com.example.android.quakereport;
 
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
 
 
 public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapter.ViewHolder> {
@@ -18,17 +20,20 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView magnitudeText;
-        public TextView placeText;
+        public TextView locationOffsetText;
+        public TextView primaryLocationText;
         public TextView dateText;
+        public TextView timeText;
 
         public ViewHolder(View itemView) {
             super(itemView);
             magnitudeText = (TextView) itemView.findViewById(R.id.magnitude_text);
-            placeText = (TextView) itemView.findViewById(R.id.place_text);
+            locationOffsetText = (TextView) itemView.findViewById(R.id.location_offset_text);
+            primaryLocationText = (TextView) itemView.findViewById(R.id.primary_location_text);
             dateText = (TextView) itemView.findViewById(R.id.date_text);
+            timeText = (TextView) itemView.findViewById(R.id.time_text);
         }
     }
-
 
     @Override
     public RvEarthquakeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -42,13 +47,25 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
     public void onBindViewHolder(RvEarthquakeAdapter.ViewHolder viewHolder, int position) {
         final Earthquake quake = earthquake.get(position);
 
-        viewHolder.magnitudeText.setText(quake.getMagnitude());
-        viewHolder.placeText.setText(quake.getPlace());
-        viewHolder.dateText.setText(quake.getDate());
+        String magnitude = quake.getMagnitude();
+        String locationOffset = quake.getLocationOffset();
+        String primaryLocation = quake.getPrimaryLocation();
+        String formattedDate = quake.getDate();
+        String formattedTime = quake.getTime();
+        int magnitudeColorResourceId = quake.getMagnitudeColor();
 
+        viewHolder.magnitudeText.setText(magnitude);
+        viewHolder.locationOffsetText.setText(locationOffset);
+        viewHolder.primaryLocationText.setText(primaryLocation);
+        viewHolder.dateText.setText(formattedDate);
+        viewHolder.timeText.setText(formattedTime);
+
+        GradientDrawable magnitudeCircle = (GradientDrawable) viewHolder.magnitudeText.getBackground();
+        magnitudeCircle.setColor(magnitudeColorResourceId);
     }
 
     @Override
     public int getItemCount() {return earthquake.size();}
+
 }
 

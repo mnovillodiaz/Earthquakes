@@ -6,28 +6,51 @@ package com.example.android.quakereport;
 
 public class Earthquake {
 
-    // double for Earthquakes magnitude
     private String magnitude;
-    private String place;
+    private int magnitudeColor;
+    private String locationOffset;
+    private String primaryLocation;
     private String date;
+    private String time;
 
     /**
      Constructor to create new data
         @param magnitude
-        @param place
+        @param magnitudeColor
+        @param locationOffset
+        @param primaryLocation
         @param date
+        @param time
      **/
 
-    public Earthquake(String magnitude, String place, String date){
+    public Earthquake(String magnitude, int magnitudeColor, String locationOffset,
+                      String primaryLocation, String date, String time) {
         this.magnitude = magnitude;
-        this.place= place;
+        this.magnitudeColor = magnitudeColor;
+        this.locationOffset = locationOffset;
+        this.primaryLocation = primaryLocation;
         this.date = date;
+        this.time = time;
     }
 
     // Getters
 
-    public String getMagnitude() { return magnitude;}
-    public String getPlace() {return place;}
+    public String getMagnitude() {return magnitude;}
+    public int getMagnitudeColor() {return magnitudeColor;}
+    public String getLocationOffset() {return locationOffset;}
+    public String getPrimaryLocation() {return  primaryLocation;};
     public String getDate() {return date;}
+    public String getTime() {return time;}
 
+    @Override
+    public String toString() {
+        return "Earthquake{" +
+                "magnitude='" + magnitude + '\'' +
+                ", magnitudeColor='" + magnitudeColor + '\'' +
+                ", locationOffset='" + locationOffset + '\'' +
+                ", primaryLocation='" + primaryLocation + '\'' +
+                ", date='" + date + '\'' +
+                ", time=" + time +
+                '}';
+    }
 }
