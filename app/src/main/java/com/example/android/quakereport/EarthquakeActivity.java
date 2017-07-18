@@ -35,11 +35,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
-    private ProgressBar progressBar;
-    private TextView emptyView;
+
+    @BindView(R.id.progress_bar) ProgressBar progressBar;
+    @BindView(R.id.empty_view) TextView emptyView;
 
 
     /** URL for earthquake data from the USGS dataset */
@@ -70,11 +74,7 @@ public class EarthquakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_list);
-
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        emptyView = (TextView) findViewById(R.id.empty_view);
-
-
+        ButterKnife.bind(this);
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String minMagnitude = sharedPrefs.getString(
@@ -115,8 +115,6 @@ public class EarthquakeActivity extends AppCompatActivity {
         // Lookup the RecyclerView in activity layout
 
         RecyclerView rvQuake = (RecyclerView) findViewById(R.id.earthquake_list);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        emptyView = (TextView) findViewById(R.id.empty_view);
         progressBar.setVisibility(View.GONE);
 
         if (result.isEmpty()) {

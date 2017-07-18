@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapter.ViewHolder> {
@@ -19,19 +21,16 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView magnitudeText;
-        public TextView locationOffsetText;
-        public TextView primaryLocationText;
-        public TextView dateText;
-        public TextView timeText;
+
+        @BindView(R.id.magnitude_text) TextView magnitudeText;
+        @BindView(R.id.location_offset_text) TextView locationOffsetText;
+        @BindView(R.id.primary_location_text) TextView primaryLocationText;
+        @BindView(R.id.date_text) TextView dateText;
+        @BindView(R.id.time_text) TextView timeText;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            magnitudeText = (TextView) itemView.findViewById(R.id.magnitude_text);
-            locationOffsetText = (TextView) itemView.findViewById(R.id.location_offset_text);
-            primaryLocationText = (TextView) itemView.findViewById(R.id.primary_location_text);
-            dateText = (TextView) itemView.findViewById(R.id.date_text);
-            timeText = (TextView) itemView.findViewById(R.id.time_text);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -60,7 +59,8 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
         viewHolder.dateText.setText(formattedDate);
         viewHolder.timeText.setText(formattedTime);
 
-        GradientDrawable magnitudeCircle = (GradientDrawable) viewHolder.magnitudeText.getBackground();
+        GradientDrawable magnitudeCircle = (GradientDrawable)
+                viewHolder.magnitudeText.getBackground();
         magnitudeCircle.setColor(magnitudeColorResourceId);
     }
 
