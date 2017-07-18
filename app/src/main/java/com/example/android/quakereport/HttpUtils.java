@@ -29,6 +29,7 @@ public final class HttpUtils {
 
 
     public static Response fetchEarthquakeData(String requestUrl) {
+
         //Create URL object
         URL url = createUrl(requestUrl);
 

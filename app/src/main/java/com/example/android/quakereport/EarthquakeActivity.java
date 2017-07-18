@@ -15,17 +15,30 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    public Context context;
+    private ProgressBar progressBar;
+    private TextView emptyView;
+
 
     /** URL for earthquake data from the USGS dataset */
     private static final String USGS_REQUEST_URL =
@@ -34,19 +47,65 @@ public class EarthquakeActivity extends AppCompatActivity {
     public EarthquakeTransformer earthquakeTransformer = new EarthquakeTransformer();
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_list);
 
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if(isConnected) {
+            EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+            task.execute(USGS_REQUEST_URL);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText(R.string.no_intenet);
+        }
 
     }
 
     private void updateUi(ArrayList<Earthquake> result) {
         // Lookup the RecyclerView in activity layout
         RecyclerView rvQuake = (RecyclerView) findViewById(R.id.earthquake_list);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        emptyView = (TextView) findViewById(R.id.empty_view);
+        progressBar.setVisibility(View.GONE);
+
+        if (result.isEmpty()) {
+            rvQuake.setVisibility(View.GONE);
+            emptyView.setText(R.string.no_results);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+        else {
+            rvQuake.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
 
         // Create adapter passing in the sample user data
         RvEarthquakeAdapter adapter = new RvEarthquakeAdapter(result);
