@@ -1,6 +1,7 @@
 package com.example.android.quakereport;
 
 import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,8 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
 
         GradientDrawable magnitudeCircle = (GradientDrawable)
                 viewHolder.magnitudeText.getBackground();
-        magnitudeCircle.setColor(magnitudeColorResourceId);
+        magnitudeCircle.setColor(ResourcesCompat.
+                getColor(viewHolder.magnitudeText.getContext().getResources(),magnitudeColorResourceId,null));
     }
 
     @Override
