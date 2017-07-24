@@ -15,10 +15,10 @@ import butterknife.ButterKnife;
 
 
 public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapter.ViewHolder> {
-    private ArrayList<Earthquake> earthquake;
+    private ArrayList<UiModel> uiModel;
 
-    public RvEarthquakeAdapter(ArrayList<Earthquake> earthquake) {
-        this.earthquake = earthquake;
+    public RvEarthquakeAdapter(ArrayList<UiModel> uiModel) {
+        this.uiModel = uiModel;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -45,7 +45,7 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
 
     @Override
     public void onBindViewHolder(RvEarthquakeAdapter.ViewHolder viewHolder, int position) {
-        final Earthquake quake = earthquake.get(position);
+        final UiModel quake = uiModel.get(position);
 
         String magnitude = quake.getMagnitude();
         String locationOffset = quake.getLocationOffset();
@@ -67,7 +67,7 @@ public class RvEarthquakeAdapter extends RecyclerView.Adapter<RvEarthquakeAdapte
     }
 
     @Override
-    public int getItemCount() {return earthquake.size();}
+    public int getItemCount() {return uiModel.size();}
 
 }
 

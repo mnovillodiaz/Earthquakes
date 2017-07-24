@@ -15,9 +15,9 @@ public class EarthquakeTransformer {
 
     public EarthquakeTransformer() {}
 
-    public ArrayList<Earthquake> transform(final HttpUtils.Response response) {
+    public ArrayList<UiModel> transform(final DataModel.Response response) {
 
-        ArrayList<Earthquake> earthquakes = new ArrayList<Earthquake>();
+        ArrayList<UiModel> earthquakes = new ArrayList<UiModel>();
 
             for (int i = 0; i < response.features.size(); i++){
             double mag = response.features.get(i).properties.mag;
@@ -31,7 +31,7 @@ public class EarthquakeTransformer {
             String dateFormatted = getDateFormatted(time);
             String timeFormatted = getTimeFormatted(time);
 
-            earthquakes.add(new Earthquake(magnitude, magnitudeColor, locationOffset,
+            earthquakes.add(new UiModel(magnitude, magnitudeColor, locationOffset,
                     primaryLocation, dateFormatted, timeFormatted));
         }
 

@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.List;
+
 
 /**
  * Created by mdiaz on 05.07.17.
@@ -28,7 +28,7 @@ public final class HttpUtils {
     public static final String LOG_TAG = HttpUtils.class.getSimpleName();
 
 
-    public static Response fetchEarthquakeData(String requestUrl) {
+    public static DataModel.Response fetchEarthquakeData(String requestUrl) {
 
         //Create URL object
         URL url = createUrl(requestUrl);
@@ -43,7 +43,7 @@ public final class HttpUtils {
         }
 
         //Extract relevant fields from the JSON response and create an response object
-        Response response = extractFeatureFromJson(jsonResponse);
+        DataModel.Response response = extractFeatureFromJson(jsonResponse);
         return response;
     }
 
@@ -116,16 +116,16 @@ public final class HttpUtils {
         return output.toString();
     }
 
-    private static Response extractFeatureFromJson(String earthquakeJSON) {
+    private static DataModel.Response extractFeatureFromJson(String earthquakeJSON) {
         //if the JSON string is empty or null, the return early.
         if (TextUtils.isEmpty(earthquakeJSON)) {
             return null;
         }
-        Response response;
+        DataModel.Response response;
         try {
 
             Gson gson = new Gson();
-            response = gson.fromJson(earthquakeJSON, Response.class);
+            response = gson.fromJson(earthquakeJSON, DataModel.Response.class);
 
         } catch (JsonSyntaxException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
@@ -137,18 +137,4 @@ public final class HttpUtils {
         return response;
     }
 
-
-    public class Response {
-        List<Feature> features;
-    }
-
-    public class Feature {
-        Properties properties;
-    }
-
-    public class Properties {
-        double mag;
-        String place;
-        long time;
-    }
 }
