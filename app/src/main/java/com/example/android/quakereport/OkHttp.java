@@ -19,16 +19,14 @@ public class OkHttp {
     public static DataModel.Response fetchData(String requestUrl) {
         OkHttpClient client = new OkHttpClient();
 
-        Request.Builder builder = new Request.Builder();
-        builder.url(requestUrl);
-
-        Request request = builder.build();
+        Request request = new Request.Builder()
+                .url(requestUrl)
+                .build();
 
         try {
             Response serverResponse = client.newCall(request).execute();
             String jsonResponse = serverResponse.body().string();
-            DataModel.Response response = extractFeatureFromJson(jsonResponse);
-            return response;
+            return extractFeatureFromJson(jsonResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
