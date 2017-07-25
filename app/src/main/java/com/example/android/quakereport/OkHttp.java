@@ -48,7 +48,7 @@ public class OkHttp {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e("HttpUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("OkHttp", "Problem parsing the earthquake JSON results", e);
             throw new JsonSyntaxException(e);
         }
         return response;

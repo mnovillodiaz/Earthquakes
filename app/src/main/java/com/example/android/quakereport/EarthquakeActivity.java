@@ -149,7 +149,6 @@ public class EarthquakeActivity extends AppCompatActivity {
                 return null;
             }
 
-            /*EarthquakeDataModel.Response response = HttpUtils.fetchEarthquakeData(urls[0]);*/
             EarthquakeDataModel.Response response = OkHttp.fetchData(urls[0]);
             ArrayList<EarthquakeUiModel> result = earthquakeTransformer.transform(response);
             return result;
