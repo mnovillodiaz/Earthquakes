@@ -16,7 +16,7 @@ import okhttp3.Response;
 
 public class OkHttp {
 
-    public static DataModel.Response fetchData(String requestUrl) {
+    public static EarthquakeDataModel.Response fetchData(String requestUrl) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -33,16 +33,16 @@ public class OkHttp {
         return null;
     }
 
-    private static DataModel.Response extractFeatureFromJson(String earthquakeJSON) {
+    private static EarthquakeDataModel.Response extractFeatureFromJson(String earthquakeJSON) {
         //if the JSON string is empty or null, the return early.
         if (TextUtils.isEmpty(earthquakeJSON)) {
             return null;
         }
-        DataModel.Response response;
+        EarthquakeDataModel.Response response;
         try {
 
             Gson gson = new Gson();
-            response = gson.fromJson(earthquakeJSON, DataModel.Response.class);
+            response = gson.fromJson(earthquakeJSON, EarthquakeDataModel.Response.class);
 
         } catch (JsonSyntaxException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,

@@ -111,7 +111,7 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     }
 
-    private void updateUi(ArrayList<UiModel> result) {
+    private void updateUi(ArrayList<EarthquakeUiModel> result) {
         // Lookup the RecyclerView in activity layout
 
         RecyclerView rvQuake = (RecyclerView) findViewById(R.id.earthquake_list);
@@ -141,23 +141,23 @@ public class EarthquakeActivity extends AppCompatActivity {
     }
 
 
-   private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<UiModel>> {
+   private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<EarthquakeUiModel>> {
         @Override
-        protected ArrayList<UiModel> doInBackground(String... urls) {
+        protected ArrayList<EarthquakeUiModel> doInBackground(String... urls) {
             // Don't perform the request if there are no URLs, or the first URL is null.
             if (urls.length < 1 || urls[0] == null) {
                 return null;
             }
 
-            /*DataModel.Response response = HttpUtils.fetchEarthquakeData(urls[0]);*/
-            DataModel.Response response = OkHttp.fetchData(urls[0]);
-            ArrayList<UiModel> result = earthquakeTransformer.transform(response);
+            /*EarthquakeDataModel.Response response = HttpUtils.fetchEarthquakeData(urls[0]);*/
+            EarthquakeDataModel.Response response = OkHttp.fetchData(urls[0]);
+            ArrayList<EarthquakeUiModel> result = earthquakeTransformer.transform(response);
             return result;
         }
 
 
        @Override
-        protected void onPostExecute(ArrayList<UiModel> result) {
+        protected void onPostExecute(ArrayList<EarthquakeUiModel> result) {
             // If there is no result, do nothing.
             if (result == null) {
                 return;

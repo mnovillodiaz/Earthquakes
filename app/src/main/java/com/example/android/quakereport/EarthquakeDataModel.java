@@ -6,7 +6,7 @@ import java.util.List;
  * Created by mdiaz on 24.07.17.
  */
 
-public class DataModel {
+public class EarthquakeDataModel {
 
     public class Response {
         List<Feature> features;

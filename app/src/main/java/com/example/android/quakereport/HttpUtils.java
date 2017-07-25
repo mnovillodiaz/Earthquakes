@@ -28,7 +28,7 @@ public final class HttpUtils {
     public static final String LOG_TAG = HttpUtils.class.getSimpleName();
 
 
-    public static DataModel.Response fetchEarthquakeData(String requestUrl) {
+    public static EarthquakeDataModel.Response fetchEarthquakeData(String requestUrl) {
 
         //Create URL object
         URL url = createUrl(requestUrl);
@@ -43,7 +43,7 @@ public final class HttpUtils {
         }
 
         //Extract relevant fields from the JSON response and create an response object
-        DataModel.Response response = extractFeatureFromJson(jsonResponse);
+        EarthquakeDataModel.Response response = extractFeatureFromJson(jsonResponse);
         return response;
     }
 
@@ -116,16 +116,16 @@ public final class HttpUtils {
         return output.toString();
     }
 
-    private static DataModel.Response extractFeatureFromJson(String earthquakeJSON) {
+    private static EarthquakeDataModel.Response extractFeatureFromJson(String earthquakeJSON) {
         //if the JSON string is empty or null, the return early.
         if (TextUtils.isEmpty(earthquakeJSON)) {
             return null;
         }
-        DataModel.Response response;
+        EarthquakeDataModel.Response response;
         try {
 
             Gson gson = new Gson();
-            response = gson.fromJson(earthquakeJSON, DataModel.Response.class);
+            response = gson.fromJson(earthquakeJSON, EarthquakeDataModel.Response.class);
 
         } catch (JsonSyntaxException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,

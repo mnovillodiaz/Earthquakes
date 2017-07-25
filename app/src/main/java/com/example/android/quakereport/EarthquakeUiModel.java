@@ -4,7 +4,7 @@ package com.example.android.quakereport;
  * Created by mdiaz on 25/06/17.
  */
 
-public class UiModel {
+public class EarthquakeUiModel {
 
     private String magnitude;
     private int magnitudeColor;
@@ -23,8 +23,8 @@ public class UiModel {
         @param time
      **/
 
-    public UiModel(String magnitude, int magnitudeColor, String locationOffset,
-                   String primaryLocation, String date, String time) {
+    public EarthquakeUiModel(String magnitude, int magnitudeColor, String locationOffset,
+                             String primaryLocation, String date, String time) {
         this.magnitude = magnitude;
         this.magnitudeColor = magnitudeColor;
         this.locationOffset = locationOffset;
@@ -44,7 +44,7 @@ public class UiModel {
 
     @Override
     public String toString() {
-        return "UiModel{" +
+        return "EarthquakeUiModel{" +
                 "magnitude='" + magnitude + '\'' +
                 ", magnitudeColor='" + magnitudeColor + '\'' +
                 ", locationOffset='" + locationOffset + '\'' +
