@@ -1,4 +1,4 @@
-package com.example.android.quakereport;
+package com.example.android.quakereport.UI;
 
 /**
  * Created by mdiaz on 25/06/17.

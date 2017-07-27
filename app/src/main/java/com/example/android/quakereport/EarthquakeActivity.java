@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.quakereport;
 
 import android.content.Context;
@@ -20,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,24 +16,33 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.quakereport.Data.ApiUtils;
+import com.example.android.quakereport.Data.EarthquakeDataModel;
+import com.example.android.quakereport.Data.EarthquakeService;
+import com.example.android.quakereport.Data.EarthquakeTransformer;
+import com.example.android.quakereport.UI.DividerItemDecoration;
+import com.example.android.quakereport.UI.EarthquakeUiModel;
+import com.example.android.quakereport.UI.RvEarthquakeAdapter;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.empty_view)
+    TextView emptyView;
 
-    @BindView(R.id.progress_bar) ProgressBar progressBar;
-    @BindView(R.id.empty_view) TextView emptyView;
-
-
-    /** URL for earthquake data from the USGS dataset */
-    private static final String USGS_REQUEST_URL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query";
 
     public EarthquakeTransformer earthquakeTransformer = new EarthquakeTransformer();
+
+    private EarthquakeService service;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,23 +68,6 @@ public class EarthquakeActivity extends AppCompatActivity {
         setContentView(R.layout.earthquake_list);
         ButterKnife.bind(this);
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String minMagnitude = sharedPrefs.getString(
-                getString(R.string.settings_min_magnitude_key),
-                getString(R.string.settings_min_magnitude_default));
-
-        String orderBy = sharedPrefs.getString(
-                getString(R.string.settings_order_by_key),
-                getString(R.string.settings_order_by_default));
-
-        Uri baseUri = Uri.parse(USGS_REQUEST_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-
-        uriBuilder.appendQueryParameter("format", "geojson");
-        uriBuilder.appendQueryParameter("limit", "10");
-        uriBuilder.appendQueryParameter("minmag", minMagnitude);
-        uriBuilder.appendQueryParameter("orderby", orderBy);
-
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -100,9 +75,8 @@ public class EarthquakeActivity extends AppCompatActivity {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        if(isConnected) {
-            EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-            task.execute(uriBuilder.toString());
+        if (isConnected) {
+            loadEarthquakes();
         } else {
             progressBar.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
@@ -121,8 +95,7 @@ public class EarthquakeActivity extends AppCompatActivity {
             rvQuake.setVisibility(View.GONE);
             emptyView.setText(R.string.no_results);
             emptyView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             rvQuake.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
@@ -140,27 +113,42 @@ public class EarthquakeActivity extends AppCompatActivity {
         rvQuake.addItemDecoration(itemDecoration);
     }
 
+    public void loadEarthquakes() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String minMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<EarthquakeUiModel>> {
-        @Override
-        protected ArrayList<EarthquakeUiModel> doInBackground(String... urls) {
-            // Don't perform the request if there are no URLs, or the first URL is null.
-            if (urls.length < 1 || urls[0] == null) {
-                return null;
-            }
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default));
 
-            EarthquakeDataModel.Response response = HttpUtils.fetchEarthquakeData(urls[0]);
-            ArrayList<EarthquakeUiModel> result = earthquakeTransformer.transform(response);
-            return result;
-        }
+        service = ApiUtils.getEarthquakeService();
+        service.getEarthquakes(minMagnitude, orderBy)
+                .enqueue(new Callback<EarthquakeDataModel>() {
+                    @Override
+                    public void onResponse(Call<EarthquakeDataModel> call,
+                                           Response<EarthquakeDataModel> response) {
 
-       @Override
-        protected void onPostExecute(ArrayList<EarthquakeUiModel> result) {
-            // If there is no result, do nothing.
-            if (result == null) {
-                return;
-            }
-           updateUi(result);
-        }
+                        if (response.isSuccessful()) {
+                            ArrayList<EarthquakeUiModel> result = earthquakeTransformer
+                                    .transform(response.body());
+                            updateUi(result);
+                        } else {
+                            int statusCode = response.code();
+                            String message = getString(R.string.error_code) + statusCode;
+                            progressBar.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                            emptyView.setText(message);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EarthquakeDataModel> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
+                        emptyView.setVisibility(View.VISIBLE);
+                        emptyView.setText(R.string.problem);
+                    }
+                });
     }
 }

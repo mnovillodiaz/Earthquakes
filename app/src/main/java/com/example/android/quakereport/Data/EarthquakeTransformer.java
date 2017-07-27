@@ -1,4 +1,7 @@
-package com.example.android.quakereport;
+package com.example.android.quakereport.Data;
+
+import com.example.android.quakereport.UI.EarthquakeUiModel;
+import com.example.android.quakereport.R;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -15,14 +18,14 @@ public class EarthquakeTransformer {
 
     public EarthquakeTransformer() {}
 
-    public ArrayList<EarthquakeUiModel> transform(final EarthquakeDataModel.Response response) {
+    public ArrayList<EarthquakeUiModel> transform(final EarthquakeDataModel response) {
 
         ArrayList<EarthquakeUiModel> earthquakes = new ArrayList<EarthquakeUiModel>();
 
-            for (int i = 0; i < response.features.size(); i++){
-            double mag = response.features.get(i).properties.mag;
-            String place = response.features.get(i).properties.place;
-            long time = response.features.get(i).properties.time;
+            for (int i = 0; i < response.getFeatures().size(); i++){
+            double mag = response.getFeatures().get(i).getProperties().getMag();
+            String place = response.getFeatures().get(i).getProperties().getPlace();
+            long time = response.getFeatures().get(i).getProperties().getTime();
 
             String magnitude = getMagnitudeFormatted(mag);
             int magnitudeColor = getMagnitudeColor(mag);

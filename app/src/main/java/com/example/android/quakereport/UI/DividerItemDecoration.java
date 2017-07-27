@@ -1,4 +1,4 @@
-package com.example.android.quakereport;
+package com.example.android.quakereport.UI;
 
 import android.content.Context;
 import android.content.res.TypedArray;

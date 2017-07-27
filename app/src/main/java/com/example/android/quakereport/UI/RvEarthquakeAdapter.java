@@ -1,4 +1,4 @@
-package com.example.android.quakereport;
+package com.example.android.quakereport.UI;
 
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.android.quakereport.R;
 
 import java.util.ArrayList;
 
